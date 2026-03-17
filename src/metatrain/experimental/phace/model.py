@@ -255,11 +255,11 @@ class PhACE(ModelInterface[ModelHypers]):
                 blocks=[
                     TensorBlock(
                         values=features_tensor,
-                        samples=samples,
+                        samples=samples.to(device),
                         components=[],
                         properties=Labels(
                             names=["feature"],
-                            values=torch.arange(features_tensor.shape[-1]).unsqueeze(
+                            values=torch.arange(features_tensor.shape[-1], device=device).unsqueeze(
                                 -1
                             ),
                         ),
