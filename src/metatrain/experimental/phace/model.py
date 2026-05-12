@@ -264,9 +264,10 @@ class PhACE(ModelInterface[ModelHypers]):
                         components=[],
                         properties=Labels(
                             names=["feature"],
-                            values=torch.arange(features_tensor.shape[-1]).unsqueeze(
-                                -1
-                            ),
+                            values=torch.arange(
+                                features_tensor.shape[-1],
+                                device=features_tensor.device,
+                            ).unsqueeze(-1),
                         ),
                     )
                 ],

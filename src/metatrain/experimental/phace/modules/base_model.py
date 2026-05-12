@@ -15,6 +15,8 @@ from .tensor_product import couple_features_all, uncouple_features_all
 class BaseModel(torch.nn.Module):
     """Core PhACE GNN model operating on raw tensor data (no metatensor wrapping)."""
 
+    shared_feature_source: Dict[str, str]
+
     def __init__(self, hypers, dataset_info) -> None:
         super().__init__()
         self.atomic_types = dataset_info.atomic_types
@@ -273,10 +275,11 @@ class BaseModel(torch.nn.Module):
             last_layer_feature_dict[output_name] = last_layer_features
 
         # Shared-feature targets apply a learned projection to the source's head outputs
-        for target_name, source_name in self.shared_feature_source.items():
+        for target_name, proj_module in self.shared_projections.items():
+            source_name = self.shared_feature_source[target_name]
             source_features = last_layer_feature_dict[source_name]
             proj_features = list(source_features)
-            proj_features[0] = self.shared_projections[target_name](source_features[0])
+            proj_features[0] = proj_module(source_features[0])
             last_layer_feature_dict[target_name] = proj_features
 
         for output_name, layer in self.last_layers.items():
